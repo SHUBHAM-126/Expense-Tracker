@@ -4,7 +4,7 @@ import { PiPizza, PiGift } from "react-icons/pi";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { BsSuitcase2 } from "react-icons/bs";
 
-export default function TransactionCard({ details }) {
+export default function TransactionCard({ details, handleDelete, handleEdit }) {
 
     return (
         <div className={styles.card}>
@@ -23,10 +23,10 @@ export default function TransactionCard({ details }) {
             <div className={styles.cardInner}>
                 <p className={styles.cardPrice}>{`₹${details.price}`}</p>
                 <div className={styles.cardButtonWrapper}>
-                    <button className={styles.cardDelete}>
+                    <button className={styles.cardDelete} onClick={handleDelete}>
                         <IoMdCloseCircleOutline />
                     </button>
-                    <button className={styles.cardEdit}>
+                    <button className={styles.cardEdit} onClick={handleEdit}>
                         <MdOutlineModeEdit />
                     </button>
                 </div>

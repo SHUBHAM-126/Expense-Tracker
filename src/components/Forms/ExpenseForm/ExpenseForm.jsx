@@ -1,8 +1,8 @@
 import styles from './ExpenseForm.module.css'
 import Button from '../../Button/Button.jsx'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList }) {
+export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, editId }) {
 
     const [formData, setFormData] = useState({
         title: '',
@@ -16,9 +16,9 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList }) 
         setFormData(prev => ({ ...prev, [name]: e.target.value }))
     }
 
-    const handleSubmit = (e) => {
+    const handleAdd = (e) => {
         e.preventDefault()
-        const lastId = expenseList[expenseList.length - 1].id
+        const lastId = expenseList.length > 0 ? expenseList[expenseList.length - 1].id : 0
         setExpenseList(prev => [...prev, { ...formData, id: lastId + 1 }])
 
         setFormData({
@@ -31,11 +31,44 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList }) 
         setIsOpen(false)
     }
 
+    const handleEdit = (e) => {
+        e.preventDefault()
+
+        const updated = expenseList.map(item => {
+            if(item.id == editId){
+                return {...formData, id : editId}
+            }
+            else{
+                return item
+            }
+        })
+
+        setExpenseList(updated)
+
+        setIsOpen(false)
+    }
+
+    useEffect(() => {
+
+        if (editId) {
+            const expenseData = expenseList.find(item => item.id == editId)
+            
+            setFormData({
+                title : expenseData.title,
+                category : expenseData.category,
+                price : expenseData.price,
+                date : expenseData.date
+            })
+
+        }
+
+    }, [editId])
+
     return (
 
         <div className={styles.formWrapper}>
-            <h3>Add Expenses</h3>
-            <form onSubmit={handleSubmit}>
+            <h3>{editId ? 'Edit Expense' : 'Add Expenses'}</h3>
+            <form onSubmit={editId ? handleEdit : handleAdd}>
                 <input type="text" name="title" placeholder='Title'
                     value={formData.title}
                     onChange={handleChange}
@@ -65,7 +98,7 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList }) 
                     required
                 />
 
-                <Button type="submit" style="primary" shadow>Add Expense</Button>
+                <Button type="submit" style="primary" shadow>{editId ? 'Edit Expense' : 'Add Expense'}</Button>
 
                 <Button style='secondary' shadow
                     handleClick={() => setIsOpen(false)}

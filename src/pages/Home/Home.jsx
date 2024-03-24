@@ -10,12 +10,8 @@ export default function Home() {
 
     const [balance, setBalance] = useState(0)
     const [expense, setExpense] = useState(0)
-    const [expenseList, setExpenseList] = useState(
-        [
-            { title: 'Sumosa', price: '20', category: 'food', date: '12/04/2023', id: 1 },
-            { title: 'Movie', price: '20', category: 'entertainment', date: '12/04/2023', id: 2 }
-        ]
-    )
+    const [expenseList, setExpenseList] = useState([])
+    const [isMounted, setIsMounted] = useState(false)
 
     //Show hide modals
     const [isOpenExpense, setIsOpenExpense] = useState(false)
@@ -24,7 +20,6 @@ export default function Home() {
     useEffect(() => {
 
         //Check localStorage
-
         const localBalance = localStorage.getItem('balance')
 
         if (localBalance) {
@@ -35,7 +30,22 @@ export default function Home() {
             localStorage.setItem('balance', 5000)
         }
 
+        const items = JSON.parse(localStorage.getItem('expenses'))
+        if (items) {
+            setExpenseList(items)
+            setIsMounted(true)
+        }
+
     }, [])
+
+    // saving expense list in localStorage
+    useEffect(() => {
+
+        if (isMounted) {
+            localStorage.setItem('expenses', JSON.stringify(expenseList))
+        }
+
+    }, [expenseList])
 
     return (
         <div className={styles.container}>
@@ -63,7 +73,7 @@ export default function Home() {
             {/* Transactions and bar chart wrapper */}
             <div className={styles.transactionsWrapper}>
 
-                <TransactionList transactions={expenseList} title='Recent Transactions' />
+                <TransactionList transactions={expenseList} editTransactions={setExpenseList} title='Recent Transactions' />
 
             </div>
 
