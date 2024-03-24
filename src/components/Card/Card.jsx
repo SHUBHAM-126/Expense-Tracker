@@ -10,7 +10,7 @@ export default function Card({ title, money, buttonText, buttonType ,handleClick
                     {`₹${money}`}
                 </span>
             </h3>
-            <Button handleClick={handleClick} type={buttonType}>{buttonText}</Button>
+            <Button handleClick={handleClick} style={buttonType}>{buttonText}</Button>
         </div>
     )
 }

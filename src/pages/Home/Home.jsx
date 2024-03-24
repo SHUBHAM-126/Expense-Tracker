@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import Card from '../../components/Card/Card'
 import styles from './Home.module.css'
 import TransactionList from '../../components/TransactionList/TransactionList'
+import ExpenseForm from '../../components/Forms/ExpenseForm/ExpenseForm'
+import Modal from '../../components/Modal/Modal'
+import AddBalanceForm from '../../components/Forms/AddBalanceForm/AddBalanceForm'
 
 export default function Home() {
 
@@ -14,7 +17,12 @@ export default function Home() {
         ]
     )
 
+    //Show hide modals
+    const [isOpenExpense, setIsOpenExpense] = useState(false)
+    const [isOpenBalance, setIsOpenBalance] = useState(false)
+
     useEffect(() => {
+
         //Check localStorage
 
         const localBalance = localStorage.getItem('balance')
@@ -41,7 +49,7 @@ export default function Home() {
                     money={balance}
                     buttonText="+ Add Income"
                     buttonType='success'
-                    handleClick={() => { }} />
+                    handleClick={() => { setIsOpenBalance(true) }} />
 
                 <Card
                     title="Expenses"
@@ -49,7 +57,7 @@ export default function Home() {
                     buttonText="+ Add Expense"
                     buttonType='failure'
                     success={false}
-                    handleClick={() => { }} />
+                    handleClick={() => { setIsOpenExpense(true) }} />
             </div>
 
             {/* Transactions and bar chart wrapper */}
@@ -58,6 +66,17 @@ export default function Home() {
                 <TransactionList transactions={expenseList} title='Recent Transactions' />
 
             </div>
+
+
+            {/* Modals */}
+            <Modal isOpen={isOpenExpense} setIsOpen={setIsOpenExpense}>
+                <ExpenseForm setIsOpen={setIsOpenExpense} expenseList={expenseList} setExpenseList={setExpenseList} />
+            </Modal>
+
+            <Modal isOpen={isOpenBalance} setIsOpen={setIsOpenBalance}>
+                <AddBalanceForm setIsOpen={setIsOpenBalance} />
+            </Modal>
+
 
         </div>
     )
