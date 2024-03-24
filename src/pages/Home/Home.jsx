@@ -23,7 +23,7 @@ export default function Home() {
         const localBalance = localStorage.getItem('balance')
 
         if (localBalance) {
-            setBalance(localBalance)
+            setBalance(Number(localBalance))
         }
         else {
             setBalance(5000)
@@ -45,7 +45,23 @@ export default function Home() {
             localStorage.setItem('expenses', JSON.stringify(expenseList))
         }
 
+        if (expenseList.length > 0) {
+            setExpense(expenseList.reduce((accumulator, currentValue) => accumulator + Number(currentValue.price), 0))
+        }
+        else {
+            setExpense(0)
+        }
+
     }, [expenseList])
+
+    // saving balance in localStorage
+    useEffect(() => {
+
+        if (isMounted) {
+            localStorage.setItem('balance', balance)
+        }
+
+    }, [balance])
 
     return (
         <div className={styles.container}>
@@ -73,18 +89,30 @@ export default function Home() {
             {/* Transactions and bar chart wrapper */}
             <div className={styles.transactionsWrapper}>
 
-                <TransactionList transactions={expenseList} editTransactions={setExpenseList} title='Recent Transactions' />
+                <TransactionList
+                    transactions={expenseList}
+                    editTransactions={setExpenseList}
+                    title='Recent Transactions'
+                    balance = {balance}
+                    setBalance = {setBalance}
+                />
 
             </div>
 
 
             {/* Modals */}
             <Modal isOpen={isOpenExpense} setIsOpen={setIsOpenExpense}>
-                <ExpenseForm setIsOpen={setIsOpenExpense} expenseList={expenseList} setExpenseList={setExpenseList} />
+                <ExpenseForm
+                    setIsOpen={setIsOpenExpense}
+                    expenseList={expenseList}
+                    setExpenseList={setExpenseList}
+                    setBalance={setBalance}
+                    balance={balance}
+                />
             </Modal>
 
             <Modal isOpen={isOpenBalance} setIsOpen={setIsOpenBalance}>
-                <AddBalanceForm setIsOpen={setIsOpenBalance} />
+                <AddBalanceForm setIsOpen={setIsOpenBalance} setBalance={setBalance} />
             </Modal>
 
 

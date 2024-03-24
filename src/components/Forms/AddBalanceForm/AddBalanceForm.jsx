@@ -2,13 +2,13 @@ import styles from './AddBalanceForm.module.css'
 import Button from '../../Button/Button.jsx'
 import { useState } from 'react'
 
-export default function AddBalanceForm({ setIsOpen }) {
+export default function AddBalanceForm({ setIsOpen, setBalance }) {
 
     const [income, setIncome] = useState('')
 
     const handleSubmit = (e) => {
         e.preventDefault()
-
+        setBalance(prev => prev + Number(income))
         setIsOpen(false)
     }
 

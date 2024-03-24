@@ -2,7 +2,7 @@ import styles from './ExpenseForm.module.css'
 import Button from '../../Button/Button.jsx'
 import { useEffect, useState } from 'react'
 
-export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, editId }) {
+export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, editId, setBalance, balance }) {
 
     const [formData, setFormData] = useState({
         title: '',
@@ -18,6 +18,17 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, ed
 
     const handleAdd = (e) => {
         e.preventDefault()
+
+
+        if (balance < Number(formData.price)) {
+
+            // show notistack here
+            return
+
+        }
+
+        setBalance(prev => prev - Number(formData.price))
+
         const lastId = expenseList.length > 0 ? expenseList[expenseList.length - 1].id : 0
         setExpenseList(prev => [...prev, { ...formData, id: lastId + 1 }])
 
@@ -34,11 +45,22 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, ed
     const handleEdit = (e) => {
         e.preventDefault()
 
+        if (balance < Number(formData.price)) {
+
+            // show notistack here
+            return
+
+        }
+
         const updated = expenseList.map(item => {
-            if(item.id == editId){
-                return {...formData, id : editId}
+            if (item.id == editId) {
+
+                const priceDifference = item.price - Number(formData.price)
+                setBalance(prev => prev + priceDifference)
+
+                return { ...formData, id: editId }
             }
-            else{
+            else {
                 return item
             }
         })
@@ -52,12 +74,12 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, ed
 
         if (editId) {
             const expenseData = expenseList.find(item => item.id == editId)
-            
+
             setFormData({
-                title : expenseData.title,
-                category : expenseData.category,
-                price : expenseData.price,
-                date : expenseData.date
+                title: expenseData.title,
+                category: expenseData.category,
+                price: expenseData.price,
+                date: expenseData.date
             })
 
         }

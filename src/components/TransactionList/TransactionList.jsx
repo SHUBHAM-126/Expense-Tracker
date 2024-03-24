@@ -4,12 +4,17 @@ import Modal from '../Modal/Modal'
 import ExpenseForm from '../Forms/ExpenseForm/ExpenseForm'
 import { useState } from 'react'
 
-export default function TransactionList({ transactions, title, editTransactions }) {
+export default function TransactionList({ transactions, title, editTransactions, balance, setBalance }) {
 
     const [editId, setEditId] = useState(0)
     const [isDisplayEditor, setIsDisplayEditor] = useState(false)
 
     const handleDelete = (id) => {
+
+        const item = transactions.find(i => i.id == id)
+        const price = Number(item.price)
+        setBalance(prev => prev + price)
+
         editTransactions(prev => (
             prev.filter(item => item.id != id)
         ))
@@ -49,6 +54,8 @@ export default function TransactionList({ transactions, title, editTransactions 
                     expenseList={transactions}
                     setExpenseList={editTransactions}
                     setIsOpen={setIsDisplayEditor}
+                    balance={balance}
+                    setBalance={setBalance}
                 />
             </Modal>
         </div>
