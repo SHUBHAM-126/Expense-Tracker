@@ -31,17 +31,15 @@ export default function Home() {
         }
 
         const items = JSON.parse(localStorage.getItem('expenses'))
-        if (items) {
-            setExpenseList(items)
-            setIsMounted(true)
-        }
 
+        setExpenseList(items || [])
+        setIsMounted(true)
     }, [])
 
     // saving expense list in localStorage
     useEffect(() => {
 
-        if (isMounted) {
+        if (expenseList.length > 0 || isMounted) {
             localStorage.setItem('expenses', JSON.stringify(expenseList))
         }
 
@@ -93,8 +91,8 @@ export default function Home() {
                     transactions={expenseList}
                     editTransactions={setExpenseList}
                     title='Recent Transactions'
-                    balance = {balance}
-                    setBalance = {setBalance}
+                    balance={balance}
+                    setBalance={setBalance}
                 />
 
             </div>

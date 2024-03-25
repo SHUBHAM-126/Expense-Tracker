@@ -29,8 +29,8 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, ed
 
         setBalance(prev => prev - Number(formData.price))
 
-        const lastId = expenseList.length > 0 ? expenseList[expenseList.length - 1].id : 0
-        setExpenseList(prev => [...prev, { ...formData, id: lastId + 1 }])
+        const lastId = expenseList.length > 0 ? expenseList[0].id : 0
+        setExpenseList(prev => [{ ...formData, id: lastId + 1 }, ...prev])
 
         setFormData({
             title: '',
@@ -45,20 +45,20 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, ed
     const handleEdit = (e) => {
         e.preventDefault()
 
-        if (balance < Number(formData.price)) {
-
-            // show notistack here
-            return
-
-        }
-
         const updated = expenseList.map(item => {
             if (item.id == editId) {
 
                 const priceDifference = item.price - Number(formData.price)
-                setBalance(prev => prev + priceDifference)
 
+                if(priceDifference < 0 && Math.abs(priceDifference) > balance){
+                    //show alert
+                    return {...item}
+                }
+
+                setBalance(prev => prev + priceDifference)
                 return { ...formData, id: editId }
+
+
             }
             else {
                 return item

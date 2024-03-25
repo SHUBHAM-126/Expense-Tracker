@@ -2,12 +2,17 @@ import TransactionCard from '../TransactionCard/TransactionCard'
 import styles from './TransactionList.module.css'
 import Modal from '../Modal/Modal'
 import ExpenseForm from '../Forms/ExpenseForm/ExpenseForm'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Pagination from '../Pagination/Pagination'
 
 export default function TransactionList({ transactions, title, editTransactions, balance, setBalance }) {
 
     const [editId, setEditId] = useState(0)
     const [isDisplayEditor, setIsDisplayEditor] = useState(false)
+    const [currentTransactions, setCurrentTransactions] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const maxRecords = 3;
+    const [totalPages, setTotalPages] = useState(0)
 
     const handleDelete = (id) => {
 
@@ -25,6 +30,16 @@ export default function TransactionList({ transactions, title, editTransactions,
         setIsDisplayEditor(true)
     }
 
+    useEffect(() => {
+
+        const startIndex = (currentPage - 1) * maxRecords
+        const endIndex = Math.min(currentPage * maxRecords, transactions.length)
+
+        setCurrentTransactions([...transactions].slice(startIndex, endIndex))
+        setTotalPages(Math.ceil(transactions.length / maxRecords))
+
+    }, [currentPage, transactions])
+
     return (
         <div className={styles.transactionsWrapper}>
 
@@ -32,14 +47,17 @@ export default function TransactionList({ transactions, title, editTransactions,
 
             {transactions.length > 0 ?
                 <div className={styles.list}>
-                    {transactions.map(transaction => (
-                        <TransactionCard
-                            details={transaction}
-                            key={transaction.id}
-                            handleDelete={() => handleDelete(transaction.id)}
-                            handleEdit={() => handleEdit(transaction.id)}
-                        />
-                    ))}
+                    <div>
+                        {currentTransactions.map(transaction => (
+                            <TransactionCard
+                                details={transaction}
+                                key={transaction.id}
+                                handleDelete={() => handleDelete(transaction.id)}
+                                handleEdit={() => handleEdit(transaction.id)}
+                            />
+                        ))}
+                    </div>
+                    {totalPages > 1 && (<Pagination updatePage={setCurrentPage} currentPage={currentPage} totalPages={totalPages} />)}
                 </div>
                 : (
                     <div className={styles.emptyTransactionsWrapper}>
@@ -47,6 +65,7 @@ export default function TransactionList({ transactions, title, editTransactions,
                     </div>
                 )
             }
+
 
             <Modal isOpen={isDisplayEditor} setIsOpen={setIsDisplayEditor}>
                 <ExpenseForm
