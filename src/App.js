@@ -1,10 +1,13 @@
 import Home from './pages/Home/Home'
+import { SnackbarProvider } from 'notistack';
 
 function App() {
   return (
-    <div>
-      <Home />
-    </div>
+    <SnackbarProvider >
+      <div>
+        <Home />
+      </div>
+    </SnackbarProvider>
   );
 }
 

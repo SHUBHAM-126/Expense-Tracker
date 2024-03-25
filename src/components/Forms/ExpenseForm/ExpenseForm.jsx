@@ -1,6 +1,7 @@
 import styles from './ExpenseForm.module.css'
 import Button from '../../Button/Button.jsx'
 import { useEffect, useState } from 'react'
+import { useSnackbar } from 'notistack';
 
 export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, editId, setBalance, balance }) {
 
@@ -10,6 +11,8 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, ed
         price: '',
         date: '',
     })
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const handleChange = (e) => {
         const name = e.target.name
@@ -22,7 +25,8 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, ed
 
         if (balance < Number(formData.price)) {
 
-            // show notistack here
+            enqueueSnackbar("Price should be less than the wallet balance", { variant: "warning" })
+            setIsOpen(false)
             return
 
         }
@@ -50,9 +54,10 @@ export default function ExpenseForm({ setIsOpen, expenseList, setExpenseList, ed
 
                 const priceDifference = item.price - Number(formData.price)
 
-                if(priceDifference < 0 && Math.abs(priceDifference) > balance){
-                    //show alert
-                    return {...item}
+                if (priceDifference < 0 && Math.abs(priceDifference) > balance) {
+                    enqueueSnackbar("Price should not exceed the wallet balance", { variant: "warning" })
+                    setIsOpen(false)
+                    return { ...item }
                 }
 
                 setBalance(prev => prev + priceDifference)

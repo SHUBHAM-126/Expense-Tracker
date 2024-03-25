@@ -1,13 +1,22 @@
 import styles from './AddBalanceForm.module.css'
 import Button from '../../Button/Button.jsx'
 import { useState } from 'react'
+import { useSnackbar } from 'notistack';
 
 export default function AddBalanceForm({ setIsOpen, setBalance }) {
 
     const [income, setIncome] = useState('')
+    const { enqueueSnackbar } = useSnackbar();
 
     const handleSubmit = (e) => {
         e.preventDefault()
+
+        if (Number(income) < 0) {
+            enqueueSnackbar("Income should be greater than 0", { variant: "warning" })
+            setIsOpen(false)
+            return
+        }
+
         setBalance(prev => prev + Number(income))
         setIsOpen(false)
     }
