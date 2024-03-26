@@ -24,3 +24,16 @@
 }
 
 /*Mobile styles*/
+@media(max-width:767px){
+    .container h1{
+        text-align: center;
+    }
+    .cardsWrapper{
+        padding: 16px;
+        grid-template-columns: 1fr;
+        gap:24px;
+    }
+    .transactionsWrapper{
+        grid-template-columns: 1fr;
+    }
+}

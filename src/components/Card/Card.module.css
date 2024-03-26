@@ -24,3 +24,11 @@
 .failure{
     color:#F4BB4A;
 }
+@media(max-width:767px){
+    .card{
+        padding:35px 10px;
+    }
+    .cardTitle{
+        font-size:24px;
+    }
+}
