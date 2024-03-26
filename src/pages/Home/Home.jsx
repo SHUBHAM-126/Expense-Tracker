@@ -6,6 +6,7 @@ import ExpenseForm from '../../components/Forms/ExpenseForm/ExpenseForm'
 import Modal from '../../components/Modal/Modal'
 import AddBalanceForm from '../../components/Forms/AddBalanceForm/AddBalanceForm'
 import PieChart from '../../components/PieChart/PieChart'
+import BarChart from '../../components/BarChart/BarChart'
 
 export default function Home() {
 
@@ -127,6 +128,14 @@ export default function Home() {
                     title='Recent Transactions'
                     balance={balance}
                     setBalance={setBalance}
+                />
+
+                <BarChart
+                    data={[
+                        { name: 'Food', value: categoryCount.food },
+                        { name: 'Entertainment', value: categoryCount.entertainment },
+                        { name: 'Travel', value: categoryCount.travel }
+                    ]}
                 />
 
             </div>
