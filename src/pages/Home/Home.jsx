@@ -5,6 +5,7 @@ import TransactionList from '../../components/TransactionList/TransactionList'
 import ExpenseForm from '../../components/Forms/ExpenseForm/ExpenseForm'
 import Modal from '../../components/Modal/Modal'
 import AddBalanceForm from '../../components/Forms/AddBalanceForm/AddBalanceForm'
+import PieChart from '../../components/PieChart/PieChart'
 
 export default function Home() {
 
@@ -16,6 +17,9 @@ export default function Home() {
     //Show hide modals
     const [isOpenExpense, setIsOpenExpense] = useState(false)
     const [isOpenBalance, setIsOpenBalance] = useState(false)
+
+    const [categorySpends, setCategorySpends] = useState({ food: 0, entertainment: 0, travel: 0 })
+    const [categoryCount, setCategoryCount] = useState({ food: 0, entertainment: 0, travel: 0 })
 
     useEffect(() => {
 
@@ -50,6 +54,28 @@ export default function Home() {
             setExpense(0)
         }
 
+        let foodSpends = 0, entertainmentSpends = 0, travelSpends = 0
+        let foodCount = 0, entertainmentCount = 0, travelCount = 0
+
+        expenseList.forEach(item => {
+            if (item.category == 'food') {
+                foodSpends += Number(item.price)
+                foodCount++
+            }
+            else if (item.category == 'entertainment') {
+                entertainmentSpends += Number(item.price)
+                entertainmentCount++
+            }
+            else if (item.category == 'travel') {
+                travelSpends += Number(item.price)
+                travelCount++
+            }
+        })
+
+        setCategorySpends({ food: foodSpends, travel: travelSpends, entertainment: entertainmentSpends })
+
+        setCategoryCount({ food: foodCount, travel: travelCount, entertainment: entertainmentCount })
+
     }, [expenseList])
 
     // saving balance in localStorage
@@ -82,6 +108,14 @@ export default function Home() {
                     buttonType='failure'
                     success={false}
                     handleClick={() => { setIsOpenExpense(true) }} />
+
+                <PieChart
+                    data={[
+                        { name: 'Food', value: categorySpends.food },
+                        { name: 'Entertainment', value: categorySpends.entertainment },
+                        { name: 'Travel', value: categorySpends.travel }
+                    ]}
+                />
             </div>
 
             {/* Transactions and bar chart wrapper */}
